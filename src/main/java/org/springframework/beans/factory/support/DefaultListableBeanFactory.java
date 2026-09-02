@@ -5,7 +5,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/*
+ * @Date:2026/8/31
+ * */
 public class DefaultListableBeanFactory extends AbstractBeanFactory implements BeanDefinitionRegistry {
     private final Map<String, BeanDefinition> beanDefinitionMap = new HashMap<>();
 
@@ -16,12 +18,7 @@ public class DefaultListableBeanFactory extends AbstractBeanFactory implements B
         beanDefinitionMap.put(beanName, beanDefinition);
 
     }
-    @Override
-    public boolean containsBean(String name) {
-        //TODO 无实例化bean，暂时判断beanDefinition是否存在
 
-        return beanDefinitionMap.containsKey(name);
-    }
 
     @Override
     public BeanDefinition getBeanDefinition(String beanName) {

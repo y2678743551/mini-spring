@@ -14,7 +14,9 @@ public class XmlConstants {
     public final static String LAZY_INIT_ATTRIBUTE = "lazy-init";
     public final static String INIT_METHOD_ATTRIBUTE = "init-method";
     public final static String DESTROY_METHOD_ATTRIBUTE = "destroy-method";
-
+    public final static String PROPERTY_ELEMENT = "property";
+    public final static String PROPERTY_NAME_ATTRIBUTE = "name";
+    public final static String PROPERTY_VALUE_ATTRIBUTE = "value";
 
 
 }

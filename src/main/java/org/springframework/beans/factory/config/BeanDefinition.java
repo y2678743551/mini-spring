@@ -1,4 +1,7 @@
 package org.springframework.beans.factory.config;
+
+import org.springframework.beans.factory.PropertyValues;
+
 /*
  * @description:描述bean的元数据
  * @date 2026/8/30
@@ -10,11 +13,18 @@ public class BeanDefinition {
 
     private String beanName;
     private String beanId;
-    private String scope;
+    private String scope=SCOPE_SINGLETON;
     private boolean lazyInit;
     private String initMethod;
     private String destroyMethod;
     private Class<?> beanClass;
+    private PropertyValues propertyValues;
+    public void setPropertyValues(PropertyValues propertyValues) {
+        this.propertyValues = propertyValues;
+    }
+    public PropertyValues getPropertyValues() {
+        return propertyValues;
+    }
 
     public void setBeanClass(Class<?> beanClass) {
         this.beanClass = beanClass;
@@ -70,11 +80,11 @@ public class BeanDefinition {
     }
     public void setClass(String className) {
         if(className != null && !className.isEmpty())
-        try {
-            this.beanClass = Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+            try {
+                this.beanClass = Class.forName(className,true,Thread.currentThread().getContextClassLoader());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
     }
 
     public boolean isSingleton() {

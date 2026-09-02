@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
-    <bean id="exampleBean" ></bean>
+    <bean id="exampleBean" class="springframework.DefaultListableBeanFactoryTest$ExampleBean">
+        <property name="name" value="exampleName"/>
+    </bean>
     <bean id="exampleBean2" ></bean>
 </beans>
