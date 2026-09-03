@@ -1,6 +1,6 @@
 package org.springframework.beans.factory.config;
 
-import org.springframework.beans.factory.PropertyValues;
+import org.springframework.beans.PropertyValues;
 
 /*
  * @description:描述bean的元数据

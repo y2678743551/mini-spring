@@ -1,8 +1,13 @@
 package org.springframework.beans.factory.support;
 
+import org.dom4j.DocumentException;
+import org.springframework.beans.BeanException;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+
+import java.io.IOException;
+
 /**
  *
  * @date: 2026/8/31
@@ -34,7 +39,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 
 
     @Override
-    public void loadBeanDefinitions(Resource... resources) throws Exception {
+    public void loadBeanDefinitions(Resource... resources) throws BeanException, DocumentException, IOException {
         for (Resource resource : resources)
             loadBeanDefinitions(resource);
 
