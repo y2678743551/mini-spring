@@ -1,10 +1,12 @@
 package org.springframework.beans.factory.support;
 
+import cn.hutool.core.util.TypeUtil;
 import org.springframework.beans.*;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.BeanReference;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.core.convert.support.DefaultConversionService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ public abstract class AbstractBeanFactory  implements ListableBeanFactory, Autow
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
     private final Map<String, Object> singletonMap = new HashMap<>();
     private final InstantiationStrategy instantiationStrategy = new SimpleInstantiationStrategy();//TODO 临时实现，后续需要修改策略模式
+    private final DefaultConversionService conversionService = new DefaultConversionService();
     @Override
     public Object getBean(String name) throws BeanException {
         if(containsSingleton(name))
@@ -77,7 +80,9 @@ public abstract class AbstractBeanFactory  implements ListableBeanFactory, Autow
                 BeanReference beanReference= (BeanReference) value;
                 getBean(beanReference.getBeanName());
             }
-            //TODO 使用转换器进行类型转换
+            Class<?> targetType = (Class<?>) TypeUtil.getFieldType(beanDefinition.getBeanClass(), name);
+
+            value = conversionService.convert(value, targetType);
             try {
                 String setterName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
                 bean.getClass().getMethod(setterName, value.getClass()).invoke(bean, value);
