@@ -60,7 +60,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                 String propertyName = property.attributeValue(XmlConstants.PROPERTY_NAME_ATTRIBUTE);
                 String value = property.attributeValue(XmlConstants.PROPERTY_VALUE_ATTRIBUTE);
                 String ref = property.attributeValue(XmlConstants.PROPERTY_REF_ATTRIBUTE);
-                if(StrUtil.isEmpty(ref)&&StrUtil.isNotEmpty(value))
+                if(StrUtil.isNotEmpty(ref)&&StrUtil.isNotEmpty(value))
                     throw new BeanException("value与ref不能同时存在");
                 if(StrUtil.isNotEmpty(ref))
                     beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, new BeanReference(ref)));

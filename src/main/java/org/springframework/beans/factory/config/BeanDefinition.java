@@ -18,7 +18,7 @@ public class BeanDefinition {
     private String initMethod;
     private String destroyMethod;
     private Class<?> beanClass;
-    private PropertyValues propertyValues;
+    private PropertyValues propertyValues=new PropertyValues();
     public void setPropertyValues(PropertyValues propertyValues) {
         this.propertyValues = propertyValues;
     }

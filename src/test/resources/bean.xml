@@ -3,5 +3,7 @@
     <bean id="exampleBean" class="springframework.DefaultListableBeanFactoryTest$ExampleBean">
         <property name="name" value="exampleName"/>
     </bean>
-    <bean id="exampleBean2" ></bean>
+    <bean id="BeanWithWrapperType" class="springframework.ConverterTest$BeanWithWrapperType">
+        <property name="number" value="123123"/>
+    </bean>
 </beans>

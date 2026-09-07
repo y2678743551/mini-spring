@@ -13,7 +13,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
         try {
             return beanDefinition.getBeanClass().getDeclaredConstructor().newInstance();
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Bean实例化失败",e);
         }
     }
 }

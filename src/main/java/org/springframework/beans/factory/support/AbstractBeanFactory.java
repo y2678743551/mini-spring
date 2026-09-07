@@ -6,6 +6,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.BeanReference;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.core.convert.ConverterException;
 import org.springframework.core.convert.support.DefaultConversionService;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,7 +28,7 @@ public abstract class AbstractBeanFactory  implements ListableBeanFactory, Autow
 
         BeanDefinition beanDefinition = getBeanDefinition(name);
         if(beanDefinition == null)
-            throw new BeanException("BeanDefinition not found");
+            throw new BeanException("BeanDefinition "+name+" not found");
 
         Object bean = createBean(name, beanDefinition);
         return bean;
@@ -76,18 +77,25 @@ public abstract class AbstractBeanFactory  implements ListableBeanFactory, Autow
         for (PropertyValue propertyValue:propertyValues.getPropertyValueList()){
             String name = propertyValue.getName();
             Object value = propertyValue.getValue();
-            if(value instanceof BeanReference){
-                BeanReference beanReference= (BeanReference) value;
+            if(value instanceof BeanReference beanReference){
                 getBean(beanReference.getBeanName());
             }
             Class<?> targetType = (Class<?>) TypeUtil.getFieldType(beanDefinition.getBeanClass(), name);
+            try {
+                value = conversionService.convert(value, targetType);
+            } catch (ConverterException e) {
+                throw new BeanException(e.getMessage(), e);
+            }
 
-            value = conversionService.convert(value, targetType);
             try {
                 String setterName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+
                 bean.getClass().getMethod(setterName, value.getClass()).invoke(bean, value);
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new BeanException("不存在" +name + "对应的set方法");
+
+            } catch ( NoSuchMethodException e) {
+                throw new BeanException("不存在" +name + "对应的set方法",e);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new BeanException("set方法调用失败",e);
             }
         }
     }
