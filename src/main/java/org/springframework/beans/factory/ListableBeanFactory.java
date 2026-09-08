@@ -1,6 +1,5 @@
-package org.springframework.beans;
+package org.springframework.beans.factory;
 
-import org.springframework.beans.factory.BeanFactory;
 /*
 * @description: 可列表化的bean工厂接口
 * @date: 2026/9/3

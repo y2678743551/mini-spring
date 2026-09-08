@@ -1,141 +1,58 @@
 package org.springframework.beans.factory.support;
 
-import cn.hutool.core.util.TypeUtil;
+
 import org.springframework.beans.*;
+
+
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.BeanReference;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.core.convert.ConverterException;
-import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.beans.factory.config.SingletonBeanRegistry;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractBeanFactory  implements ListableBeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory {
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
-    private final Map<String, Object> singletonMap = new HashMap<>();
-    private final InstantiationStrategy instantiationStrategy = new SimpleInstantiationStrategy();//TODO 临时实现，后续需要修改策略模式
-    private final DefaultConversionService conversionService = new DefaultConversionService();
-    @Override
-    public Object getBean(String name) throws BeanException {
-        if(containsSingleton(name))
-            return getSingleton(name);
-
-
-        BeanDefinition beanDefinition = getBeanDefinition(name);
-        if(beanDefinition == null)
-            throw new BeanException("BeanDefinition "+name+" not found");
-
-        Object bean = createBean(name, beanDefinition);
-        return bean;
-    }
-
-
-    @Override
-    public Object createBean(String beanName, BeanDefinition beanDefinition){
-        return doCreateBean(beanName, beanDefinition);
-    }
-    protected Object doCreateBean(String name,  BeanDefinition beanDefinition) {
-        //实例化bean
-        Object bean = instantiationStrategy.instantiate(beanDefinition);
-        //设置属性
-
-
-        applyPropertyValues(name, bean, beanDefinition);
-
-
-        beanPostProcessors.forEach(beanPostProcessor -> {
-            try {
-                beanPostProcessor.postProcessBeforeInitialization(bean, name);
-            } catch (BeanException e) {
-                throw new BeanException(e.getMessage(),e);
-            }
-        });
-
-        beanPostProcessors.forEach(beanPostProcessor -> {
-            try {
-                beanPostProcessor.postProcessAfterInitialization(bean, name);
-            } catch (BeanException e) {
-                throw new BeanException(e.getMessage(),e);
-            }
-        });
-        //注册singleton bean
-        if (beanDefinition.isSingleton()){
-            registerSingleton(name, bean);
-        }
-        return bean;
-    }
-    protected void applyPropertyValues(String beanName,Object bean,BeanDefinition beanDefinition){
-
-        PropertyValues propertyValues = beanDefinition.getPropertyValues();
-        if(propertyValues.isEmpty())
-            return;
-        for (PropertyValue propertyValue:propertyValues.getPropertyValueList()){
-            String name = propertyValue.getName();
-            Object value = propertyValue.getValue();
-            if(value instanceof BeanReference beanReference){
-                getBean(beanReference.getBeanName());
-            }
-            Class<?> targetType = (Class<?>) TypeUtil.getFieldType(beanDefinition.getBeanClass(), name);
-            try {
-                value = conversionService.convert(value, targetType);
-            } catch (ConverterException e) {
-                throw new BeanException(e.getMessage(), e);
-            }
-
-            try {
-                String setterName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
-
-                bean.getClass().getMethod(setterName, value.getClass()).invoke(bean, value);
-
-            } catch ( NoSuchMethodException e) {
-                throw new BeanException("不存在" +name + "对应的set方法",e);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new BeanException("set方法调用失败",e);
-            }
-        }
-    }
-    protected abstract BeanDefinition getBeanDefinition(String name) throws BeanException;
-    protected abstract boolean containsBeanDefinition(String name);
-    @Override
-    public boolean containsBean(String name) {
-        if (singletonMap.containsKey(name))
-            return true;
-        return containsBeanDefinition(name);
-    }
-
-
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getBean(String name, Class<T> requiredType) throws BeanException {
-        return (T) getBean(name);
+    public <T> T getBean(String beanName, Class<T> requiredType) throws BeanException {
+        return (T) getBean(beanName);
+    }
+    @Override
+    public Object getBean(String beanName) throws BeanException {
+        Object singleton = getSingleton(beanName);
+        if(singleton!=null){
+            return singleton;
+        }
+
+        BeanDefinition beanDefinition = getBeanDefinition(beanName);
+        if(beanDefinition == null)
+            throw new BeanException("BeanDefinition "+beanName+" not found");
+
+        Object bean = createBean(beanName   , beanDefinition);
+        registerSingleton(beanName, bean);
+        return bean;
     }
 
 
+
+    protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeanException;
+    protected abstract boolean containsBeanDefinition(String beanName);
     @Override
-    public Object getSingleton(String beanName) {
-        if (singletonMap.containsKey(beanName))
-            return singletonMap.get(beanName);
-        throw new BeanException("No bean named " + beanName + " is defined");
+    public boolean containsBean(String beanName) {
+        if (containsSingleton(beanName))
+            return true;
+        return containsBeanDefinition(beanName);
     }
 
-    @Override
-    public void registerSingleton(String beanName, Object singletonObject) {
-        singletonMap.put(beanName, singletonObject);
-    }
+    public abstract Object createBean(String beanbeanName, BeanDefinition beanDefinition);
 
-    @Override
-    public boolean containsSingleton(String beanName) {
-        return singletonMap.containsKey(beanName);
-    }
-
-    @Override
-    public String[] getSingletonNames() {
-        return singletonMap.keySet().toArray(new String[0]);
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return beanPostProcessors;
     }
 }

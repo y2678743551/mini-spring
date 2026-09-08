@@ -1,6 +1,7 @@
 package org.springframework.beans.factory.support;
 
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.Map;
 /*
  * @Date:2026/8/31
  * */
-public class DefaultListableBeanFactory extends AbstractBeanFactory implements BeanDefinitionRegistry {
+public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry {
     private final Map<String, BeanDefinition> beanDefinitionMap = new HashMap<>();
 
 

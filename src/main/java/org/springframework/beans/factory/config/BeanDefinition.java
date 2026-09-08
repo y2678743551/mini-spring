@@ -66,16 +66,14 @@ public class BeanDefinition {
     public boolean isLazyInit() {
         return lazyInit;
     }
-    public void setInitMethod(String initMethod) {
+    public void setInitMethodName(String initMethod) {
         this.initMethod = initMethod;
     }
-    public String getInitMethod() {
-        return initMethod;
-    }
-    public void setDestroyMethod(String destroyMethod) {
+    public String getInitMethodName() {return initMethod;}
+    public void setDestroyMethodName(String destroyMethod) {
         this.destroyMethod = destroyMethod;
     }
-    public String getDestroyMethod() {
+    public String getDestroyMethodName() {
         return destroyMethod;
     }
     public void setClass(String className) {

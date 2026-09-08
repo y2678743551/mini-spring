@@ -53,8 +53,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             beanDefinition.setClass(className);
             beanDefinition.setScope(scope);
             beanDefinition.setLazyInit(Boolean.parseBoolean(lazyInit));
-            beanDefinition.setInitMethod(initMethod);
-            beanDefinition.setDestroyMethod(destroyMethod);
+            beanDefinition.setInitMethodName(initMethod);
+            beanDefinition.setDestroyMethodName(destroyMethod);
 
             for (Element property : bean.elements(XmlConstants.PROPERTY_ELEMENT)){
                 String propertyName = property.attributeValue(XmlConstants.PROPERTY_NAME_ATTRIBUTE);
