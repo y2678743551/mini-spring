@@ -1,4 +1,4 @@
-package springframework;
+package springframework.ioc;
 
 import org.dom4j.DocumentException;
 import org.junit.Test;
@@ -18,21 +18,6 @@ public class ConverterTest {
 
     }
 
-    public static class BeanWithWrapperType {
-        private Integer number;
-        public BeanWithWrapperType(Integer number) {
-            this.number = number;
-        }
-        public BeanWithWrapperType() {
-            System.out.println("Bean instance created.");
-        }
-        public int getNumber() {
-            return number;
-        }
 
-        public void setNumber(Integer number) {
-            this.number = number;
-        }
-    }
 
 }

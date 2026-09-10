@@ -18,11 +18,26 @@ import java.util.Map;
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
+    /**
+     * 根据beanName和requiredType获取bean
+     * @param beanName
+     * @param requiredType
+     * @param <T>
+     * @return
+     * @throws BeanException
+     */
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getBean(String beanName, Class<T> requiredType) throws BeanException {
         return (T) getBean(beanName);
     }
+
+    /**
+     * 根据beanName获取bean
+     * @param beanName
+     * @return
+     * @throws BeanException
+     */
     @Override
     public Object getBean(String beanName) throws BeanException {
         Object singleton = getSingleton(beanName);
@@ -39,20 +54,36 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         return bean;
     }
 
-
-
-    protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeanException;
-    protected abstract boolean containsBeanDefinition(String beanName);
+    /**
+     * 添加beanPostProcessor
+     * @param beanPostProcessor
+     */
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor){
+        beanPostProcessors.remove(beanPostProcessor);
+        beanPostProcessors.add(beanPostProcessor);
+    }
+    /**
+     * 获取beanPostProcessors
+     * @return
+     */
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return beanPostProcessors;
+    }
+    /**
+     * 判断是否包含bean
+     * @param beanName
+     * @return
+     */
     @Override
     public boolean containsBean(String beanName) {
         if (containsSingleton(beanName))
             return true;
         return containsBeanDefinition(beanName);
     }
+    protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeanException;
+    protected abstract boolean containsBeanDefinition(String beanName);
+    public abstract Object createBean(String beanName, BeanDefinition beanDefinition);
 
-    public abstract Object createBean(String beanbeanName, BeanDefinition beanDefinition);
 
-    public List<BeanPostProcessor> getBeanPostProcessors() {
-        return beanPostProcessors;
-    }
 }

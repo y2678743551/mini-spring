@@ -19,44 +19,83 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     private final InstantiationStrategy instantiationStrategy = new SimpleInstantiationStrategy();//TODO 临时实现，后续需要修改策略模式
 
     private final DefaultConversionService conversionService = new DefaultConversionService();
+
+    /**
+     * 创建bean实例
+     * @param beanName
+     * @param beanDefinition
+     * @return
+     */
     @Override
     public Object createBean(String beanName, BeanDefinition beanDefinition){
         return doCreateBean(beanName, beanDefinition);
     }
+
+    /**
+     * 执行创建bean实例
+     * @param name
+     * @param beanDefinition
+     * @return
+     */
     protected Object doCreateBean(String name,  BeanDefinition beanDefinition) {
         //实例化bean
         Object bean = instantiationStrategy.instantiate(beanDefinition);
-        registerSingletonFactory(name, () -> getEarlyBeanReference(bean, name));
+        //注册不完整的singleton bean
+        if (beanDefinition.isSingleton()){
+            Object finalBean = bean;
+
+            registerSingletonFactory(name, () -> getEarlyBeanReference(finalBean, name));
+
+        }
+
         //设置属性
         applyPropertyValues(name, bean, beanDefinition);
 
-        initializeBean(bean, name, beanDefinition);
+        bean=initializeBean(bean, name, beanDefinition);
 
-        //注册singleton bean
+        //注册完整的singleton bean
         if (beanDefinition.isSingleton()){
             registerSingleton(name, bean);
         }
         return bean;
     }
 
+    /**
+     * 初始化bean
+     * @param bean
+     * @param name
+     * @param beanDefinition
+     * @return
+     */
     private Object initializeBean(Object bean, String name, BeanDefinition beanDefinition) {
 
-        Object wrappedBean =applyBeanPostProcessorsBeforeInitialization(bean, name);
+        Object wrappedBean =bean;
+        wrappedBean=applyBeanPostProcessorsBeforeInitialization(wrappedBean, name);
 
         String initMethodName = beanDefinition.getInitMethodName();
         Class<?> beanClass = beanDefinition.getBeanClass();
-        try {
-            beanClass.getMethod(initMethodName).invoke(wrappedBean);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new BeanException("调用初始化方法失败",e);
-        } catch (NoSuchMethodException e) {
-            throw new BeanException("初始化方法不存在",e);
+
+        if (initMethodName != null){
+            try {
+                beanClass.getMethod(initMethodName).invoke(wrappedBean);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new BeanException("调用初始化方法失败", e);
+            } catch (NoSuchMethodException e) {
+                throw new BeanException("初始化方法不存在", e);
+            }
         }
 
         wrappedBean =applyBeanPostProcessorsAfterInitialization(wrappedBean, name);
         return wrappedBean;
     }
-    private Object applyBeanPostProcessorsBeforeInitialization(Object bean, String beanName) throws BeanException {
+    @Override
+    /**
+     * 调用bean前置处理器
+     * @param bean
+     * @param beanName
+     * @return
+     */
+    public Object applyBeanPostProcessorsBeforeInitialization(Object bean, String beanName) throws BeanException {
         Object result = bean;
         for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors())
         {
@@ -67,7 +106,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
         return result;
     }
-    private Object applyBeanPostProcessorsAfterInitialization(Object bean, String beanName) throws BeanException {
+    @Override
+    /**
+     * 调用bean后置处理器
+     * @param bean
+     * @param beanName
+     * @return
+     */
+    public Object applyBeanPostProcessorsAfterInitialization(Object bean, String beanName) throws BeanException {
         Object result = bean;
         for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors())
         {
@@ -78,6 +124,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
         return result;
     }
+    /**
+     * 获取早期bean引用
+     * @param bean
+     * @param beanName
+     * @return
+     */
     public Object getEarlyBeanReference(Object bean, String beanName) throws BeanException {
         Object result = bean;
         for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors())
@@ -91,6 +143,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
         return result;
     }
+
+    /**
+     * 设置bean属性值
+     * @param beanName
+     * @param bean
+     * @param beanDefinition
+     */
     protected void applyPropertyValues(String beanName,Object bean,BeanDefinition beanDefinition){
 
         PropertyValues propertyValues = beanDefinition.getPropertyValues();
@@ -103,10 +162,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 getBean(beanReference.getBeanName());
             }
             Class<?> targetType = (Class<?>) TypeUtil.getFieldType(beanDefinition.getBeanClass(), name);
-            try {
-                value = conversionService.convert(value, targetType);
-            } catch (ConverterException e) {
-                throw new BeanException(e.getMessage(), e);
+
+            if (targetType != null && !value.getClass().isAssignableFrom(targetType)){
+                try {
+                    value = conversionService.convert(value, targetType);
+                } catch (ConverterException e) {
+                    throw new BeanException(e.getMessage(), e);
+                }
             }
 
             try {

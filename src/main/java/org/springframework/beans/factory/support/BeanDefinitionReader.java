@@ -12,11 +12,11 @@ import java.io.IOException;
  * @date: 2026/8/31
  */
 public interface BeanDefinitionReader {
-    void loadBeanDefinitions(String location) throws BeanException, DocumentException, IOException;
+    void loadBeanDefinitions(String location) throws BeanException;
 
-    void loadBeanDefinitions(Resource resource) throws BeanException, IOException, DocumentException;
+    void loadBeanDefinitions(String[] locations) throws BeanException;
 
-    void loadBeanDefinitions(Resource... resources) throws BeanException, DocumentException, IOException;
+    void loadBeanDefinitions(Resource resource) throws BeanException;
 
     BeanDefinitionRegistry getRegistry();
 

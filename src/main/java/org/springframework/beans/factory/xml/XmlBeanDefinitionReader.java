@@ -25,16 +25,25 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     }
 
     @Override
-    public void loadBeanDefinitions(String location) throws DocumentException, IOException {
+    public void loadBeanDefinitions(String location) throws BeanException {
         Resource resource = getResourceLoader().getResource(location);
 
         loadBeanDefinitions(resource);
     }
 
     @Override
-    public void loadBeanDefinitions(Resource resource) throws IOException, DocumentException {
+    public void loadBeanDefinitions(Resource resource) throws BeanException {
         SAXReader reader = new SAXReader();
-        Document document = reader.read(resource.getInputStream());
+        try {
+            Document document = reader.read(resource.getInputStream());
+            doLoadBeanDefinitions(document);
+        } catch (DocumentException |IOException e) {
+            throw new BeanException("解析XML文档失败: " + resource, e);
+        }
+
+
+    }
+    private void doLoadBeanDefinitions(Document document) {
 
         Element rootElement = document.getRootElement();
 

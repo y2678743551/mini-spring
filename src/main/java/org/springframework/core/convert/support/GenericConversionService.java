@@ -132,7 +132,7 @@ public class GenericConversionService implements ConversionService, ConverterReg
         throw new ConverterException("未找到将" + sourceType + "转换为 " + targetType + "的转换器");
     }
 
-    private class ConverterAdapter implements ConditionalGenericConverter {
+    private static class ConverterAdapter implements ConditionalGenericConverter {
         private final Converter converter;
         private final ConvertiblePair convertiblePair;
         public ConverterAdapter(Converter converter, Class<?> sourceType, Class<?> targetType) {
@@ -159,7 +159,7 @@ public class GenericConversionService implements ConversionService, ConverterReg
         }
     }
 
-    private class ConverterFactoryAdapter implements ConditionalGenericConverter {
+    private static class ConverterFactoryAdapter implements ConditionalGenericConverter {
         private final ConverterFactory converterFactory;
         private final ConvertiblePair convertiblePair;
         public ConverterFactoryAdapter(ConverterFactory converterFactory, Class<?> sourceType, Class<?> targetType) {

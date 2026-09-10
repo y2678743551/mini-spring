@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
-    <bean id="exampleBean" class="springframework.DefaultListableBeanFactoryTest$ExampleBean">
+    <bean id="exampleBean" class="springframework.bean.ExampleBean">
         <property name="name" value="exampleName"/>
     </bean>
-    <bean id="BeanWithWrapperType" class="springframework.ConverterTest$BeanWithWrapperType">
+    <bean id="BeanWithWrapperType" class="springframework.bean.BeanWithWrapperType">
         <property name="number" value="123123"/>
     </bean>
 </beans>

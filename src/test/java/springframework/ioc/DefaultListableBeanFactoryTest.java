@@ -1,8 +1,9 @@
-package springframework;
+package springframework.ioc;
 
 import org.junit.Test;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import springframework.bean.ExampleBean;
 
 public class DefaultListableBeanFactoryTest {
     @Test
@@ -22,17 +23,5 @@ public class DefaultListableBeanFactoryTest {
             System.out.println("'exampleBean2' 存在");
         }
     }
-    public static class ExampleBean {
-        public ExampleBean() {
-            System.out.println("ExampleBean instance created.");
-        }
-        private String name;
 
-        public void setName(String name) {
-            this.name = name;
-        }
-        public String getName() {
-            return name;
-        }
-    }
 }

@@ -9,4 +9,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
  */
 public interface AutowireCapableBeanFactory extends BeanFactory {
    Object createBean(String beanName, BeanDefinition beanDefinition) throws BeanException;
+   Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeanException;
+   Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeanException;
 }

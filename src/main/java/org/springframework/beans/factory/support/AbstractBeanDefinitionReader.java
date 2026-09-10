@@ -15,33 +15,53 @@ import java.io.IOException;
 public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader {
     private final BeanDefinitionRegistry registry;
     private ResourceLoader resourceLoader;
+
+
+
     public AbstractBeanDefinitionReader(BeanDefinitionRegistry registry) {
         this.registry = registry;
         resourceLoader = new DefaultResourceLoader();
     }
+
+
     public AbstractBeanDefinitionReader(BeanDefinitionRegistry registry, ResourceLoader resourceLoader) {
         this.registry = registry;
         this.resourceLoader = resourceLoader;
     }
 
+    /**
+     * 获取注册表
+     * @return
+     */
     public BeanDefinitionRegistry getRegistry() {
         return registry;
     }
 
+    /**
+     * 获取资源加载器
+     * @return
+     */
     public ResourceLoader getResourceLoader() {
         return resourceLoader;
     }
 
+    /**
+     * 设置资源加载器
+     * @param resourceLoader
+     */
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
-
-
+    /**
+     * 加载Bean定义
+     * @param locations
+     * @throws BeanException
+     * @throws IOException
+     */
     @Override
-    public void loadBeanDefinitions(Resource... resources) throws BeanException, DocumentException, IOException {
-        for (Resource resource : resources)
-            loadBeanDefinitions(resource);
-
+    public void loadBeanDefinitions(String[] locations) throws BeanException{
+        for (String location : locations)
+            loadBeanDefinitions(getResourceLoader().getResource(location));
     }
 }
