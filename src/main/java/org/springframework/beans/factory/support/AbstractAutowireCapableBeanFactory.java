@@ -2,6 +2,7 @@ package org.springframework.beans.factory.support;
 
 import cn.hutool.core.util.TypeUtil;
 import org.springframework.beans.BeanException;
+import org.springframework.beans.BeanFactoryAware;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.ObjectFactory;
@@ -68,7 +69,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      * @return
      */
     private Object initializeBean(Object bean, String name, BeanDefinition beanDefinition) {
-
+        if(bean instanceof BeanFactoryAware)
+            ((BeanFactoryAware) bean).setBeanFactory(this);
         Object wrappedBean =bean;
         wrappedBean=applyBeanPostProcessorsBeforeInitialization(wrappedBean, name);
 

@@ -1,13 +1,13 @@
 package org.springframework.context.support;
 
 import org.springframework.beans.BeanException;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigableApplicationContext;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.io.DefaultResourceLoader;
 
 import java.util.Map;
@@ -17,6 +17,9 @@ import java.util.Map;
 * @date 2026/9/10
 * */
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigableApplicationContext {
+
+    private static final String APPLICATION_EVENT_MULTICASTER_BEAN_NAME = "applicationEventMulticaster";
+    private ApplicationEventMulticaster applicationEventMulticaster;
     @Override
     public void refresh()  throws BeanException {
         //准备环境变量
@@ -49,7 +52,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
     private void registerListeners() {
-
+        getBeanFactory().getBeansOfType(ApplicationListener.class).forEach((beanName, listener) -> {
+            applicationEventMulticaster.addApplicationListener(listener);
+        });
     }
 
     private void onFresh() {
@@ -57,7 +62,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
     private void initApplicationEventMulticaster() {
-
+        this.applicationEventMulticaster = new SimpleApplicationEventMulticaster();
+        getBeanFactory().registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, applicationEventMulticaster);
     }
 
     private void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
@@ -79,7 +85,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
     private void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
-        //TODO 准备beanFactory
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
     }
 
 
@@ -117,12 +123,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
     @Override
-    public Object getBean(String beanName) throws Exception {
+    public Object getBean(String beanName) {
         return getBeanFactory().getBean(beanName);
     }
 
     @Override
-    public <T> T getBean(String beanName, Class<T> requiredType) throws Exception {
+    public <T> T getBean(String beanName, Class<T> requiredType) {
         return getBeanFactory().getBean(beanName, requiredType);
     }
 

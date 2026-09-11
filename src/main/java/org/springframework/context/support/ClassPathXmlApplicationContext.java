@@ -6,7 +6,9 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
     private String [] configLocations;
 
     public ClassPathXmlApplicationContext(String... configLocations) throws BeanException {
+
         this.configLocations = configLocations;
+        refresh();
     }
 
 
