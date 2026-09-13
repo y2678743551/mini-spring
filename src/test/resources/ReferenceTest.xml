@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="referenceBean" class="springframework.bean.ReferenceBean">
+        <property name="referencedBean" ref="referencedBean"/>
+
+
+
+    </bean>
+    <bean id="referencedBean" class="springframework.bean.ReferenceBean$ReferencedBean">
+        <property name="name" value="aaaa"/>
+    </bean>
+</beans>

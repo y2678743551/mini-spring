@@ -102,7 +102,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     /**
      * 根据类型获取bean
-     * @param type
+     * @param type 类型
      * @param <T>
      * @return
      */

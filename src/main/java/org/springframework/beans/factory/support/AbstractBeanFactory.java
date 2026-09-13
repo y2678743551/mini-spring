@@ -20,10 +20,10 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     /**
      * 根据beanName和requiredType获取bean
-     * @param beanName
-     * @param requiredType
-     * @param <T>
-     * @return
+     * @param beanName bean名称
+     * @param requiredType 获取的bean类型
+     * @param <T> bean类型
+     * @return bean实例
      * @throws BeanException
      */
     @SuppressWarnings("unchecked")
@@ -34,8 +34,8 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     /**
      * 根据beanName获取bean
-     * @param beanName
-     * @return
+     * @param beanName bean名称
+     * @return bean实例
      * @throws BeanException
      */
     @Override
@@ -47,7 +47,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
         BeanDefinition beanDefinition = getBeanDefinition(beanName);
         if(beanDefinition == null)
-            throw new BeanException("BeanDefinition "+beanName+" not found");
+            throw new BeanException("未找到BeanDefinition "+beanName);
 
         Object bean = createBean(beanName   , beanDefinition);
         registerSingleton(beanName, bean);
@@ -56,7 +56,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     /**
      * 添加beanPostProcessor
-     * @param beanPostProcessor
+     * @param beanPostProcessor beanPostProcessor实例
      */
     @Override
     public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor){
@@ -65,15 +65,15 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     }
     /**
      * 获取beanPostProcessors
-     * @return
+     * @return beanPostProcessors
      */
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return beanPostProcessors;
     }
     /**
      * 判断是否包含bean
-     * @param beanName
-     * @return
+     * @param beanName bean名称
+     * @return 是否包含bean
      */
     @Override
     public boolean containsBean(String beanName) {

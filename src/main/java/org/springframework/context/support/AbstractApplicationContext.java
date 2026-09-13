@@ -7,7 +7,11 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigableApplicationContext;
 import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.DefaultResourceLoader;
 
 import java.util.Map;
@@ -19,6 +23,9 @@ import java.util.Map;
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigableApplicationContext {
 
     private static final String APPLICATION_EVENT_MULTICASTER_BEAN_NAME = "applicationEventMulticaster";
+
+    private ConfigurableEnvironment environment;
+
     private ApplicationEventMulticaster applicationEventMulticaster;
     @Override
     public void refresh()  throws BeanException {
@@ -93,26 +100,39 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     public abstract ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException ;
 
     private void finishRefresh() {
-        //TODO 完成刷新并发布事件
+        applicationEventMulticaster.multicastEvent(new ContextRefreshedEvent(this));
     }
 
     private void prepareRefresh() {
         //TODO 准备刷新环境
+        initPropertySources();
+
+        getEnvironment();
+    }
+
+    protected void initPropertySources() {
+
+    }
+
+    private ConfigurableEnvironment getEnvironment() {
+        if (this.environment == null)
+            this.environment = new StandardEnvironment();
+        return environment;
     }
 
     protected abstract ConfigurableListableBeanFactory obtainFreshBeanFactory();
 
     @Override
     public void close() {
-        //TODO 关闭事件
-
+        applicationEventMulticaster.multicastEvent(new ContextClosedEvent(this));
 
         getBeanFactory().destroySingletons();
     }
 
     @Override
     public void registerShutdownHook() {
-        //TODO 注册关闭钩子
+        Thread thread = new Thread(this::close);
+        Runtime.getRuntime().addShutdownHook(thread);
     }
 
 

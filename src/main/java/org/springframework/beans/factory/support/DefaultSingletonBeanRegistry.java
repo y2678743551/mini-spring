@@ -21,8 +21,8 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     /**
      * 获取单例Bean
-     * @param beanName
-     * @return
+     * @param beanName bean名称
+     * @return bean对象
      */
     @Override
     public Object getSingleton(String beanName) {
@@ -44,8 +44,8 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     /**
      * 注册单例Bean
-     * @param beanName
-     * @param singletonObject
+     * @param beanName bean名称
+     * @param singletonObject bean对象
      */
     @Override
     public void registerSingleton(String beanName, Object singletonObject) {
@@ -57,8 +57,8 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     /**
      * 注册单例Bean工厂
-     * @param beanName
-     * @param singletonFactory
+     * @param beanName bean名称
+     * @param singletonFactory bean工厂
      */
     public void registerSingletonFactory(String beanName, ObjectFactory<?> singletonFactory) {
         if(!singletonFactories.containsKey(beanName)&&!singletonObjects.containsKey(beanName)&&!earlySingletonObjects.containsKey(beanName))
@@ -68,8 +68,8 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     /**
      * 注册可销毁的Bean
-     * @param beanName
-     * @param bean
+     * @param beanName bean名称
+     * @param bean bean对象
      */
     public void registerDisposableBean(String beanName, DisposableBean bean) {
         if(!disposableBeans.containsKey(beanName))
@@ -79,8 +79,8 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     /**
      * 判断是否包含指定名称的单例Bean
-     * @param beanName
-     * @return
+      * @param beanName bean名称
+     * @return 是否包含指定名称的单例Bean
      */
     @Override
     public boolean containsSingleton(String beanName) {

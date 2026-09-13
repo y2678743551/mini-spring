@@ -23,9 +23,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     /**
      * 创建bean实例
-     * @param beanName
-     * @param beanDefinition
-     * @return
+     * @param beanName bean名称
+     * @param beanDefinition bean定义
+     * @return bean实例
      */
     @Override
     public Object createBean(String beanName, BeanDefinition beanDefinition){
@@ -34,9 +34,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     /**
      * 执行创建bean实例
-     * @param name
-     * @param beanDefinition
-     * @return
+     * @param name bean名称
+     * @param beanDefinition bean定义
+      * @return bean实例
      */
     protected Object doCreateBean(String name,  BeanDefinition beanDefinition) {
         //实例化bean
@@ -63,10 +63,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     /**
      * 初始化bean
-     * @param bean
-     * @param name
-     * @param beanDefinition
-     * @return
+     * @param bean bean实例
+     * @param name bean名称
+     * @param beanDefinition bean定义
+     * @return bean实例
      */
     private Object initializeBean(Object bean, String name, BeanDefinition beanDefinition) {
         if(bean instanceof BeanFactoryAware)
@@ -93,9 +93,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     @Override
     /**
      * 调用bean前置处理器
-     * @param bean
-     * @param beanName
-     * @return
+     * @param bean bean实例
+     * @param beanName bean名称
+     * @return bean实例
      */
     public Object applyBeanPostProcessorsBeforeInitialization(Object bean, String beanName) throws BeanException {
         Object result = bean;
@@ -111,9 +111,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     @Override
     /**
      * 调用bean后置处理器
-     * @param bean
-     * @param beanName
-     * @return
+     * @param bean bean实例
+     * @param beanName bean名称
+     * @return bean实例
      */
     public Object applyBeanPostProcessorsAfterInitialization(Object bean, String beanName) throws BeanException {
         Object result = bean;
@@ -128,9 +128,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
     /**
      * 获取早期bean引用
-     * @param bean
-     * @param beanName
-     * @return
+     * @param bean bean实例
+     * @param beanName bean名称
+     * @return bean实例
      */
     public Object getEarlyBeanReference(Object bean, String beanName) throws BeanException {
         Object result = bean;
@@ -148,9 +148,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     /**
      * 设置bean属性值
-     * @param beanName
-     * @param bean
-     * @param beanDefinition
+     * @param beanName bean名称
+     * @param bean bean实例
+     * @param beanDefinition bean定义
      */
     protected void applyPropertyValues(String beanName,Object bean,BeanDefinition beanDefinition){
 
@@ -161,18 +161,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             String name = propertyValue.getName();
             Object value = propertyValue.getValue();
             if(value instanceof BeanReference beanReference){
-                getBean(beanReference.getBeanName());
+                value=getBean(beanReference.getBeanName());
             }
-            Class<?> targetType = (Class<?>) TypeUtil.getFieldType(beanDefinition.getBeanClass(), name);
+            else {
+                Class<?> targetType = (Class<?>) TypeUtil.getFieldType(beanDefinition.getBeanClass(), name);
 
-            if (targetType != null && !value.getClass().isAssignableFrom(targetType)){
-                try {
-                    value = conversionService.convert(value, targetType);
-                } catch (ConverterException e) {
-                    throw new BeanException(e.getMessage(), e);
+                if (targetType != null && !value.getClass().isAssignableFrom(targetType)) {
+                    try {
+                        value = conversionService.convert(value, targetType);
+                    } catch (ConverterException e) {
+                        throw new BeanException(e.getMessage(), e);
+                    }
                 }
             }
-
             try {
                 String setterName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
 

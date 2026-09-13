@@ -21,10 +21,15 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 
     private boolean supportsListener(ApplicationListener listener, ApplicationEvent event) {
         Type[] types = listener.getClass().getGenericInterfaces();
+
         for (Type type : types) {
-            if (type == ApplicationListener.class) {
-                Class<?> eventClass = ((ParameterizedType) type).getActualTypeArguments()[0].getClass();
-                return eventClass.isAssignableFrom(event.getClass());
+            if(type instanceof ParameterizedType parameterizedType){
+                Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+
+                if (rawType.isAssignableFrom(ApplicationListener.class)) {
+                    Class<?> eventClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+                    return eventClass.isAssignableFrom(event.getClass());
+                }
             }
         }
         return false;
