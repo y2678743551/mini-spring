@@ -5,6 +5,7 @@ import org.springframework.beans.*;
 
 
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+    private final Map<String, Object> factoryBeanCache = new HashMap<String, Object>();
 
     /**
      * 根据beanName和requiredType获取bean
@@ -42,7 +44,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     public Object getBean(String beanName) throws BeanException {
         Object singleton = getSingleton(beanName);
         if(singleton!=null){
-            return singleton;
+            return getBeanForBeanInstance(singleton, beanName);
         }
 
         BeanDefinition beanDefinition = getBeanDefinition(beanName);
@@ -50,10 +52,38 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
             throw new BeanException("未找到BeanDefinition "+beanName);
 
         Object bean = createBean(beanName   , beanDefinition);
-        registerSingleton(beanName, bean);
-        return bean;
+        if(beanDefinition.isSingleton())
+            registerSingleton(beanName, bean);
+        return getBeanForBeanInstance(bean, beanName);
     }
 
+    /**
+     * 如果是FactoryBean，从FactoryBean获取bean
+     * @param beanInstance bean实例
+     * @param beanName bean名称
+     * @return 获取的bean实例
+     */
+    protected Object getBeanForBeanInstance(Object beanInstance, String beanName) {
+        Object result = beanInstance;
+        if (beanInstance instanceof FactoryBean){
+            FactoryBean factoryBean = (FactoryBean) beanInstance;
+            try {
+                if (factoryBean.isSingleton()){
+                    result = factoryBeanCache.get(beanName);
+                    if (result == null) {
+                        result = factoryBean.getObject();
+                        factoryBeanCache.put(beanName, result);
+                    }
+                }else {
+                    result= factoryBean.getObject();
+                }
+            } catch (Exception e) {
+                throw new BeanException("从FactoryBean获取bean失败: " + beanName, e);
+            }
+        }
+
+        return result;
+    }
     /**
      * 添加beanPostProcessor
      * @param beanPostProcessor beanPostProcessor实例

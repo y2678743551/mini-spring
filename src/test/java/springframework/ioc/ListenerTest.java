@@ -3,7 +3,7 @@ package springframework.ioc;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class Listener {
+public class ListenerTest {
     @Test
     public void ListenerTest() {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:Listener.xml");

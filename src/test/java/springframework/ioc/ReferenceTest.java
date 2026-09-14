@@ -7,7 +7,7 @@ import springframework.bean.ReferenceBean;
 public class ReferenceTest {
     @Test
     public void testReference() {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:ReferenceTest.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:Reference.xml");
         ReferenceBean bean = (ReferenceBean)context.getBean("referenceBean");
         System.out.println(bean);
         ReferenceBean.ReferencedBean referencedBean = bean.getReferencedBean();

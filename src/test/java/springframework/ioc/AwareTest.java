@@ -9,7 +9,7 @@ import springframework.bean.Aware;
 public class AwareTest {
     @Test
     public void test() {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:AwareTest.xml");
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:Aware.xml");
 
         Object bean = applicationContext.getBean("Aware");
         System.out.println(bean);

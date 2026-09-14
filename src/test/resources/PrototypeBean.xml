@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="prototypeBean" class="springframework.bean.ExampleBean" scope="prototype" >
+        <property name="name" value="PrototypeBean"/>
+    </bean>
+</beans>

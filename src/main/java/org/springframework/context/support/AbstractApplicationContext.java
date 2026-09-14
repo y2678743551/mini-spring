@@ -104,7 +104,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
     private void prepareRefresh() {
-        //TODO 准备刷新环境
+
         initPropertySources();
 
         getEnvironment();

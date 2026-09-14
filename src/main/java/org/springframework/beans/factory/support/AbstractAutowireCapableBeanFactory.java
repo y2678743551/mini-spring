@@ -5,6 +5,7 @@ import org.springframework.beans.BeanException;
 import org.springframework.beans.BeanFactoryAware;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -17,7 +18,7 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import java.lang.reflect.InvocationTargetException;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
-    private final InstantiationStrategy instantiationStrategy = new SimpleInstantiationStrategy();//TODO 临时实现，后续需要修改策略模式
+    private final InstantiationStrategy instantiationStrategy = new SimpleInstantiationStrategy();
 
     private final DefaultConversionService conversionService = new DefaultConversionService();
 
@@ -69,27 +70,40 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      * @return bean实例
      */
     private Object initializeBean(Object bean, String name, BeanDefinition beanDefinition) {
+
         if(bean instanceof BeanFactoryAware)
             ((BeanFactoryAware) bean).setBeanFactory(this);
         Object wrappedBean =bean;
         wrappedBean=applyBeanPostProcessorsBeforeInitialization(wrappedBean, name);
+        try {
+            invokeInitMethods(name, wrappedBean, beanDefinition);
+        } catch (Exception e) {
+            throw new BeanException("初始化bean失败:"+e.getMessage(), e);
 
-        String initMethodName = beanDefinition.getInitMethodName();
-        Class<?> beanClass = beanDefinition.getBeanClass();
-
-        if (initMethodName != null){
-            try {
-                beanClass.getMethod(initMethodName).invoke(wrappedBean);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new BeanException("调用初始化方法失败", e);
-            } catch (NoSuchMethodException e) {
-                throw new BeanException("初始化方法不存在", e);
-            }
         }
 
         wrappedBean =applyBeanPostProcessorsAfterInitialization(wrappedBean, name);
         return wrappedBean;
     }
+    protected void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception {
+        if(bean instanceof InitializingBean){
+            ((InitializingBean) bean).afterPropertiesSet();
+        }
+        String initMethodName = beanDefinition.getInitMethodName();
+        Class<?> beanClass = beanDefinition.getBeanClass();
+        System.out.println("调用初始化方法：" + initMethodName);
+        try {
+            if (initMethodName != null) {
+                beanClass.getMethod(initMethodName).invoke(bean);
+            }
+        }catch (IllegalAccessException | InvocationTargetException e) {
+            throw new BeanException("调用初始化方法失败", e);
+        } catch (NoSuchMethodException e) {
+            throw new BeanException("初始化方法不存在", e);
+        }
+
+    }
+
     @Override
     /**
      * 调用bean前置处理器
