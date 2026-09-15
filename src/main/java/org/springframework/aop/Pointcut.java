@@ -1,6 +1,6 @@
 package org.springframework.aop;
 
-public interface PointCut {
+public interface Pointcut {
     ClassFilter getClassFilter();
     MethodMatcher getMethodMatcher();
 }

@@ -5,7 +5,7 @@ import org.aspectj.weaver.tools.PointcutParser;
 import org.aspectj.weaver.tools.PointcutPrimitive;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
-import org.springframework.aop.PointCut;
+import org.springframework.aop.Pointcut;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ import java.util.Set;
  * 支持AspectJ表达式的切点表达式
  * @date 2026/9/14
  * */
-public class AspectJExpressionPointcut implements PointCut, ClassFilter, MethodMatcher {
+public class AspectJExpressionPointcut implements Pointcut, ClassFilter, MethodMatcher {
     private static final Set<PointcutPrimitive> SUPPORTED_PRIMITIVES = new HashSet<PointcutPrimitive>();
 
     static {
