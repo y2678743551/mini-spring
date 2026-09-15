@@ -10,7 +10,10 @@ import org.springframework.aop.PointCut;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
-
+/*
+ * 支持AspectJ表达式的切点表达式
+ * @date 2026/9/14
+ * */
 public class AspectJExpressionPointcut implements PointCut, ClassFilter, MethodMatcher {
     private static final Set<PointcutPrimitive> SUPPORTED_PRIMITIVES = new HashSet<PointcutPrimitive>();
 
