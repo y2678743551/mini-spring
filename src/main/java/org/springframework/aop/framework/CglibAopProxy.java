@@ -49,7 +49,8 @@ public class CglibAopProxy implements AopProxy {
     private static class CglibMethodInvocation extends ReflectiveMethodInvocation {
         private final MethodProxy proxy;
 
-        public CglibMethodInvocation(Object proxy, Object target, Method method, Object[] args, Class<?> targetClass, List<Object> chain, MethodProxy methodProxy) {
+        public CglibMethodInvocation(Object proxy, Object target, Method method,
+                                     Object[] args, Class<?> targetClass, List<Object> chain, MethodProxy methodProxy) {
             super(proxy, target, method, args, targetClass, chain);
             this.proxy = methodProxy;
         }

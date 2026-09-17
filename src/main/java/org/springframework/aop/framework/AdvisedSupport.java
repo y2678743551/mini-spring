@@ -24,6 +24,7 @@ public class AdvisedSupport {
 
     private List<Advisor> advisors = new ArrayList<>();
 
+    private boolean proxyTargetClass = true;
 
     private transient Map<Method, List<Object>> methodCache = new ConcurrentHashMap<>(32);
 
@@ -32,7 +33,8 @@ public class AdvisedSupport {
     }
 
     public void setFrozen(boolean frozen) {
-        this.frozen = frozen;
+        if (!isFrozen())
+            this.frozen = frozen;
     }
 
     public TargetSource getTargetSource() {
@@ -40,7 +42,9 @@ public class AdvisedSupport {
     }
 
     public void setTargetSource(TargetSource targetSource) {
-        this.targetSource = targetSource;
+
+        if (!isFrozen())
+            this.targetSource = targetSource;
     }
 
     public Class<?> getTargetClass() {
@@ -48,17 +52,28 @@ public class AdvisedSupport {
     }
 
     public void setTargetClass(Class<?> targetClass) {
-        this.targetClass = targetClass;
+
+        if (!isFrozen())
+            this.targetClass = targetClass;
     }
 
     public List<Advisor> getAdvisors() {
         return advisors;
     }
 
-    public void addAdvisors(Advisor advisor) {
-        this.advisors.add(advisor);
+    public void addAdvisor(Advisor advisor) {
+
+        if (!isFrozen())
+            this.advisors.add(advisor);
+    }
+    public boolean isProxyTargetClass() {
+        return proxyTargetClass;
     }
 
+    public void setProxyTargetClass(boolean proxyTargetClass) {
+        if (!isFrozen())
+            this.proxyTargetClass = proxyTargetClass;
+    }
     /**
      * 根据方法和目标类获取拦截器链
      * @param method 方法
@@ -109,4 +124,6 @@ public class AdvisedSupport {
         this.methodCache.put(method, interceptors);
         return interceptors;
     }
+
+
 }

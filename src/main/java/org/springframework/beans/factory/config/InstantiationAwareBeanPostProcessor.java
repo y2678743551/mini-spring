@@ -8,10 +8,10 @@ import org.springframework.beans.BeanException;
 public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 
     // 在Bean实例化之前执行
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeanException ;
+    public Object postProcessBeforeInstantiation(Object bean, String beanName) throws BeanException ;
     // 在Bean实例化之后执行
 
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeanException ;
+    public Object postProcessAfterInstantiation(Object bean, String beanName) throws BeanException ;
     // 获取早期对象
     default public Object getEarlyBeanReference(Object bean, String beanName) throws BeanException {
         return bean;

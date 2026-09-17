@@ -1,6 +1,7 @@
 package org.springframework.beans.factory.support;
 
 import cn.hutool.core.util.TypeUtil;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.BeanException;
 import org.springframework.beans.BeanFactoryAware;
 import org.springframework.beans.PropertyValue;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.config.InstantiationAwareBeanPostProces
 import org.springframework.core.convert.ConverterException;
 import org.springframework.core.convert.support.DefaultConversionService;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Set;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
     private final InstantiationStrategy instantiationStrategy = new SimpleInstantiationStrategy();
@@ -89,7 +92,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
         String initMethodName = beanDefinition.getInitMethodName();
         Class<?> beanClass = beanDefinition.getBeanClass();
-        System.out.println("调用初始化方法：" + initMethodName);
+
         try {
             if (initMethodName != null) {
                 beanClass.getMethod(initMethodName).invoke(bean);
@@ -189,12 +192,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             try {
                 String setterName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
 
-                bean.getClass().getMethod(setterName, value.getClass()).invoke(bean, value);
+                Method[] methods = bean.getClass().getMethods();
+                boolean found = false;
+                for (Method method : methods) {
 
-            } catch ( NoSuchMethodException e) {
-                throw new BeanException("不存在" +name + "对应的set方法",e);
+                    if (method.getName().equals(setterName) && method.getParameterCount() == 1) {
+                        method.invoke(bean, value);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    throw new BeanException(beanName + "不存在" + name + "对应的set方法");
+                }
+
+
             } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new BeanException("set方法调用失败",e);
+                throw new BeanException(beanName+"set方法调用失败",e);
             }
         }
     }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="autoProxyCreator" class="org.springframework.aop.framework.AutoProxyCreator"/>
+    <bean id="exampleBean" class="springframework.bean.ExampleBean">
+        <property name="name" value="exampleName"/>
+    </bean>
+
+    <bean id="testAfterReturningAdvice" class="springframework.aop.advice.TestAfterReturningAdvice"/>
+    <bean id="testMethodBeforeAdvice" class="springframework.aop.advice.TestMethodBeforeAdvice"/>
+
+    <bean id="afterReturningAdviceAdapter" class="org.springframework.aop.adapter.AfterReturningAdviceAdapter">
+        <property name="advice" ref="testAfterReturningAdvice"/>
+    </bean>
+    <bean id="methodBeforeAdviceAdapter" class="org.springframework.aop.adapter.MethodBeforeAdviceAdapter">
+        <property name="advice" ref="testMethodBeforeAdvice"/>
+    </bean>
+    <bean id="afterReturningAdvisor" class="org.springframework.aop.aspectJ.AspectJExpressionPointcutAdvisor">
+        <property name="expression" value="execution(* springframework.bean.ExampleBean.*(..))"/>
+        <property name="advice" ref="afterReturningAdviceAdapter"/>
+    </bean>
+    <bean id="methodBeforeAdvisor" class="org.springframework.aop.aspectJ.AspectJExpressionPointcutAdvisor">
+        <property name="expression" value="execution(* springframework.bean.ExampleBean.*(..))"/>
+        <property name="advice" ref="methodBeforeAdviceAdapter"/>
+    </bean>
+
+</beans>

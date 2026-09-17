@@ -11,6 +11,7 @@ public class ExampleBean {
             this.name = name;
         }
         public String getName() {
+            System.out.println("Getting name: " + name);
             return name;
         }
 
