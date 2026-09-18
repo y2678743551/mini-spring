@@ -1,6 +1,7 @@
 package org.springframework.beans.factory.support;
 
 
+import com.sun.source.tree.UsesTree;
 import org.springframework.beans.*;
 
 
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.Map;
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
     private final Map<String, Object> factoryBeanCache = new HashMap<String, Object>();
-
+    private ConversionService conversionService;
     /**
      * 根据beanName和requiredType获取bean
      * @param beanName bean名称
@@ -110,6 +113,14 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         if (containsSingleton(beanName))
             return true;
         return containsBeanDefinition(beanName);
+    }
+    @Override
+    public ConversionService getConversionService() {
+        return conversionService;
+    }
+    @Override
+    public void setConversionService(ConversionService conversionService) {
+        this.conversionService =  conversionService;
     }
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeanException;
     protected abstract boolean containsBeanDefinition(String beanName);

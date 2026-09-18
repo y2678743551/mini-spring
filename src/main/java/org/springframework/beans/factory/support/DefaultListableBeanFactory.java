@@ -9,7 +9,10 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 /*
  * @Date:2026/8/31
  * */
@@ -115,5 +118,20 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
                 result.put(beanName, (T) getBean(beanName));
         });
         return result;
+    }
+
+    @Override
+    public <T> T getBean(Class<T> requiredType) throws BeanException {
+        Set<T> beans = new HashSet<T>();
+        for (String beanName : beanDefinitionMap.keySet()) {
+            if (requiredType.isAssignableFrom(beanDefinitionMap.get(beanName).getBeanClass())) {
+                beans.add((T) getBean(beanName));
+            }
+        }
+        if (beans.size() == 1)
+            return beans.iterator().next();
+        if (beans.size() > 1)
+            throw new BeanException("发现" + beans.size() + "个 " + requiredType + " 类型的bean定义");
+        throw new BeanException("未发现 " + requiredType + " 类型的bean定义");
     }
 }

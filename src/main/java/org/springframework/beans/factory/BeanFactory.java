@@ -9,5 +9,6 @@ import org.springframework.beans.BeanException;
 public interface BeanFactory {
     Object getBean(String beanName) throws BeanException;
     <T> T getBean(String beanName, Class<T> requiredType) throws BeanException;
+    <T> T getBean(Class<T> requiredType) throws BeanException;
     boolean containsBean(String beanName);
 }

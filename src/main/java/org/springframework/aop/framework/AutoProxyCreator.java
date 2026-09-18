@@ -5,6 +5,7 @@ import org.springframework.aop.TargetSource;
 import org.springframework.aop.aspectJ.AspectJExpressionPointcutAdvisor;
 import org.springframework.beans.BeanException;
 import org.springframework.beans.BeanFactoryAware;
+import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
@@ -29,14 +30,16 @@ public class AutoProxyCreator implements InstantiationAwareBeanPostProcessor , B
         return wrapIfNecessary(bean, beanName);
     }
 
+
+
     @Override
-    public Object postProcessBeforeInstantiation(Object bean, String beanName) throws BeanException {
-        return bean;
+    public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeanException {
+        return null;
     }
 
     @Override
-    public Object postProcessAfterInstantiation(Object bean, String beanName) throws BeanException {
-        return bean;
+    public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeanException {
+        return true;
     }
     private Object wrapIfNecessary(Object bean, String beanName) {
         if(proxyTargetClassNames.contains(beanName))
@@ -64,6 +67,13 @@ public class AutoProxyCreator implements InstantiationAwareBeanPostProcessor , B
         proxyTargetClassNames.add(beanName);
         return wrapIfNecessary(bean, beanName);
     }
+
+    @Override
+    public PropertyValues postProcessAfterProperties(PropertyValues pvs, Object bean, String beanName) throws BeanException {
+        return pvs;
+    }
+
+
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeanException {
