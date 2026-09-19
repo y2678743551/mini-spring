@@ -1,6 +1,7 @@
 package org.springframework.beans.factory.config;
 
 import org.springframework.beans.PropertyValues;
+import org.springframework.beans.factory.annotation.AutowiredAnnotationPostProcessor;
 
 /*
  * @description:描述bean的元数据
@@ -19,6 +20,15 @@ public class BeanDefinition {
     private String destroyMethod;
     private Class<?> beanClass;
     private PropertyValues propertyValues=new PropertyValues();
+
+    public BeanDefinition(Class<?> beanClass) {
+        this.beanClass = beanClass;
+        beanName = beanClass.getName();
+    }
+    public BeanDefinition() {
+
+    }
+
     public void setPropertyValues(PropertyValues propertyValues) {
         this.propertyValues = propertyValues;
     }

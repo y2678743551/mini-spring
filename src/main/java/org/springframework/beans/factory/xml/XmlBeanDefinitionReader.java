@@ -11,9 +11,12 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinitionReader;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.io.Resource;
+import org.springframework.core.type.filter.TypeFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @date: 2026/8/31
@@ -44,8 +47,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
     }
     private void doLoadBeanDefinitions(Document document) {
-
         Element rootElement = document.getRootElement();
+
+        Element componentScan = rootElement.element(XmlConstants.COMPONENT_SCAN_ELEMENT);
+        if (componentScan != null)
+            scanPackage(componentScan);
 
 
         for (Element bean : rootElement.elements(XmlConstants.BEAN_ELEMENT)){
@@ -77,6 +83,50 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                     beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, value));
             }
             getRegistry().registerBeanDefinition(id, beanDefinition);
+        }
+    }
+
+
+
+    private void scanPackage(Element componentScan) {
+
+        String scanPath = componentScan.attributeValue(XmlConstants.COMPONENT_SCAN_BASE_PACKAGE_ATTRIBUTE );
+        if (StrUtil.isEmpty(scanPath)) {
+            throw new BeanException("未指定包路径");
+        }
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(getRegistry());
+        String excludeFilter = componentScan.attributeValue(XmlConstants.COMPONENT_SCAN_EXCLUDE_FILTER_ATTRIBUTE);
+        String includeFilter = componentScan.attributeValue(XmlConstants.COMPONENT_SCAN_INCLUDE_FILTER_ATTRIBUTE);
+
+        List<String> excludeFilters = StrUtil.split(excludeFilter, ',');
+        List<String> includeFilters = StrUtil.split(includeFilter, ',');
+        for (String filter : excludeFilters){
+            scanner.addExcludeFilter(new TypeFilter(filter) {
+                @Override
+                public boolean match(String className) {
+                    return className.contains(filter);
+                }
+            });
+        }
+        for (String filter : includeFilters){
+            scanner.addIncludeFilter(new TypeFilter(filter) {
+                @Override
+                public boolean match(String className) {
+                    return className.contains(filter);
+                }
+            });
+        }
+
+
+
+        String[] basePackages = StrUtil.splitToArray(scanPath, ',');
+
+
+        try {
+            scanner.doScan(basePackages);
+
+        } catch (IOException e) {
+            throw new BeanException("扫描包路径失败: " + scanPath, e);
         }
     }
 }

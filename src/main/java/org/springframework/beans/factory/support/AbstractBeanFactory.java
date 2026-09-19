@@ -13,6 +13,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.util.StringValueResolver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,17 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
     private final Map<String, Object> factoryBeanCache = new HashMap<String, Object>();
     private ConversionService conversionService;
+    private final List<StringValueResolver> embeddedValueResolvers = new ArrayList<StringValueResolver>();
+
+    public String resolveEmbeddedValue(String value) {
+        for (StringValueResolver resolver : embeddedValueResolvers) {
+            value = resolver.resolveStringValue(value);
+        }
+        return value;
+    }
+    public void addEmbeddedValueResolver(StringValueResolver valueResolver) {
+        embeddedValueResolvers.add(valueResolver);
+    }
     /**
      * 根据beanName和requiredType获取bean
      * @param beanName bean名称

@@ -9,6 +9,6 @@ import org.springframework.beans.factory.ListableBeanFactory;
  */
 public abstract interface ConfigurableListableBeanFactory extends ListableBeanFactory, ConfigurableBeanFactory, AutowireCapableBeanFactory {
     BeanDefinition getBeanDefinition(String beanName) throws BeanException;
-
+    String[] getBeanDefinitionNames();
     void preInstantiateSingletons() throws BeanException;
 }

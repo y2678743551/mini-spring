@@ -17,5 +17,8 @@ public class XmlConstants {
     public final static String PROPERTY_NAME_ATTRIBUTE = "name";
     public final static String PROPERTY_VALUE_ATTRIBUTE = "value";
     public final static String PROPERTY_REF_ATTRIBUTE = "ref";
-
+    public final static String COMPONENT_SCAN_ELEMENT = "component-scan";
+    public final static String COMPONENT_SCAN_BASE_PACKAGE_ATTRIBUTE = "base-package";
+    public final static String COMPONENT_SCAN_EXCLUDE_FILTER_ATTRIBUTE = "exclude-filter";
+    public final static String COMPONENT_SCAN_INCLUDE_FILTER_ATTRIBUTE = "include-filter";
 }
