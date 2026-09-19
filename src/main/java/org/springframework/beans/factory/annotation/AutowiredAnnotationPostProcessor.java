@@ -34,8 +34,8 @@ public class AutowiredAnnotationPostProcessor implements InstantiationAwareBeanP
     @Override
     public PropertyValues postProcessAfterProperties(PropertyValues pvs, Object bean, String beanName) throws BeanException {
 
-
         Field[] fields = bean.getClass().getDeclaredFields();
+        // autowired注解处理
         for (Field field : fields) {
             if (field.isAnnotationPresent(Autowired.class)) {
                 field.setAccessible(true);
@@ -55,11 +55,14 @@ public class AutowiredAnnotationPostProcessor implements InstantiationAwareBeanP
                 }
             }
         }
+
+        // value注解处理
         for (Field field : fields) {
             if (field.isAnnotationPresent(Value.class)) {
                 field.setAccessible(true);
                 Value valueAnnotation = field.getAnnotation(Value.class);
                 String value = valueAnnotation.value();
+                value = beanFactory.resolveEmbeddedValue(value);
                 Class<?> fieldType = field.getType();
                 Object convertedValue = null;
                 ConversionService conversionService = beanFactory.getConversionService();
