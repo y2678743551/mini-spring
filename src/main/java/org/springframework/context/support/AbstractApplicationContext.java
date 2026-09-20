@@ -151,7 +151,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     public <T> T getBean(String beanName, Class<T> requiredType) {
         return getBeanFactory().getBean(beanName, requiredType);
     }
-
+    @Override
+    public <T> T getBean(Class<T> requiredType) {
+        return getBeanFactory().getBean(requiredType);
+    }
     @Override
     public boolean containsBean(String beanName) {
         return getBeanFactory().containsBean(beanName);

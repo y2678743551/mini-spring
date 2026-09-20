@@ -7,6 +7,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.BeanException;
 import org.springframework.beans.PropertyValue;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinitionReader;
@@ -79,8 +80,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                     throw new BeanException("value与ref不能同时存在");
                 if(StrUtil.isNotEmpty(ref))
                     beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, new BeanReference(ref)));
-                else
+                else {
                     beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, value));
+                }
             }
             getRegistry().registerBeanDefinition(id, beanDefinition);
         }
@@ -95,28 +97,37 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             throw new BeanException("未指定包路径");
         }
         ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(getRegistry());
-        String excludeFilter = componentScan.attributeValue(XmlConstants.COMPONENT_SCAN_EXCLUDE_FILTER_ATTRIBUTE);
-        String includeFilter = componentScan.attributeValue(XmlConstants.COMPONENT_SCAN_INCLUDE_FILTER_ATTRIBUTE);
 
-        List<String> excludeFilters = StrUtil.split(excludeFilter, ',');
-        List<String> includeFilters = StrUtil.split(includeFilter, ',');
-        for (String filter : excludeFilters){
-            scanner.addExcludeFilter(new TypeFilter(filter) {
-                @Override
-                public boolean match(String className) {
-                    return className.contains(filter);
-                }
-            });
-        }
-        for (String filter : includeFilters){
-            scanner.addIncludeFilter(new TypeFilter(filter) {
-                @Override
-                public boolean match(String className) {
-                    return className.contains(filter);
-                }
-            });
-        }
+        for (Element excludeFilter: componentScan.elements(XmlConstants.COMPONENT_SCAN_EXCLUDE_FILTER_ATTRIBUTE)){
 
+            String expression = excludeFilter.attributeValue(XmlConstants.COMPONENT_SCAN_EXPRESSION_ATTRIBUTE);
+
+            List<String> excludeFilters = StrUtil.split(expression, ',');
+
+            for (String filter : excludeFilters){
+                scanner.addExcludeFilter(new TypeFilter() {
+                    @Override
+                    public boolean match(String className) {
+                        return filter.contains(className);
+                    }
+                });
+            }
+        }
+        for (Element includeFilter: componentScan.elements(XmlConstants.COMPONENT_SCAN_INCLUDE_FILTER_ATTRIBUTE)){
+
+            String expression = includeFilter.attributeValue(XmlConstants.COMPONENT_SCAN_EXPRESSION_ATTRIBUTE);
+
+            List<String> includeFilters = StrUtil.split(expression, ',');
+
+            for (String filter : includeFilters){
+                scanner.addIncludeFilter(new TypeFilter() {
+                    @Override
+                    public boolean match(String className) {
+                        return filter.contains(className);
+                    }
+                });
+            }
+        }
 
 
         String[] basePackages = StrUtil.splitToArray(scanPath, ',');

@@ -58,10 +58,10 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
     private String determineBeanName(BeanDefinition beanDefinition) {
         Class<?> beanClass = beanDefinition.getBeanClass();
         Component component = beanClass.getAnnotation(Component.class);
-        String value = component.value();
-        if (StrUtil.isEmpty(value)) {
-            value = StrUtil.lowerFirst(beanClass.getSimpleName());
+        if (component != null && !StrUtil.isEmpty(component.value())) {
+            return component.value();
         }
-        return value;
+
+        return beanClass.getSimpleName();
     }
 }

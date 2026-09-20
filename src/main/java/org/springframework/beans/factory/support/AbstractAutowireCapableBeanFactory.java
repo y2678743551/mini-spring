@@ -102,6 +102,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         for (PropertyValue propertyValue:pvs.getPropertyValueList()){
             String name = propertyValue.getName();
             Object value = propertyValue.getValue();
+            value = resolveEmbeddedValue((String) value);
             if(value instanceof BeanReference beanReference){
                 value=getBean(beanReference.getBeanName());
             }
@@ -260,7 +261,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
             Class<?> targetType = (Class<?>) TypeUtil.getFieldType(bean.getClass(), name);
 
-            if (targetType != null && !value.getClass().isAssignableFrom(targetType)) {
+            if (targetType != null && !value.getClass().isAssignableFrom(targetType)&&getConversionService().canConvert(value.getClass(), targetType)) {
                 try {
                     value = getConversionService().convert(value, targetType);
                 } catch (ConverterException e) {

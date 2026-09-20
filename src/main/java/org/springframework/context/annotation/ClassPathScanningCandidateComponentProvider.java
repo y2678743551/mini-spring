@@ -39,6 +39,7 @@ public class ClassPathScanningCandidateComponentProvider {
                 if (isCandidateComponent(className)) {
                     BeanDefinition beanDefinition = new BeanDefinition();
 
+                    beanDefinition.setBeanClass(ClassUtil.loadClass(className));
                     candidates.add(beanDefinition);
                 }
             } catch (IOException e) {
@@ -74,7 +75,10 @@ public class ClassPathScanningCandidateComponentProvider {
             if (file.isDirectory()) {
                 getClassNamesInPackageByFile(basePackage, file.getPath(), classNames);
             } else {
-                classNames.add(basePackage + "." + file.getName().replace(".class", ""));
+                String rootPath =filePath.replace('\\', '.');
+                rootPath = rootPath.substring(!rootPath.contains(basePackage) ? 0 : rootPath.indexOf(basePackage));
+                classNames.add(rootPath + "." + file.getName().replace(".class", ""));
+
             }
         }
 

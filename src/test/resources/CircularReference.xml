@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="A" class="springframework.bean.BeanA">
+        <property name="b" ref="B"/>
+    </bean>
+    <bean id="B" class="springframework.bean.BeanB">
+        <property name="a" ref="A"/>
+    </bean>
+    <bean id="C" class="springframework.bean.BeanC">
+        <property name="c" ref="C"/>
+    </bean>
+</beans>

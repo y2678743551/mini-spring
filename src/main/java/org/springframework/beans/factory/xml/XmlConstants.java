@@ -21,4 +21,5 @@ public class XmlConstants {
     public final static String COMPONENT_SCAN_BASE_PACKAGE_ATTRIBUTE = "base-package";
     public final static String COMPONENT_SCAN_EXCLUDE_FILTER_ATTRIBUTE = "exclude-filter";
     public final static String COMPONENT_SCAN_INCLUDE_FILTER_ATTRIBUTE = "include-filter";
+    public static final String COMPONENT_SCAN_EXPRESSION_ATTRIBUTE = "expression";
 }

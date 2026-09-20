@@ -26,7 +26,7 @@ public abstract class AbstractTypeHierarchyTraversingFilter  implements TypeFilt
             InputStream stream = classLoader.getResourceAsStream(className.replace('.', '/') + ".class");
             ClassReader reader = new ClassReader(stream);
             ClassNode classNode = new ClassNode();
-
+            reader.accept(classNode, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 
 
             if (matchSelf(classNode)) {
@@ -37,7 +37,8 @@ public abstract class AbstractTypeHierarchyTraversingFilter  implements TypeFilt
             if (considerInherited) {
 
                 String superClass = classNode.superName;
-                return match(superClass);
+                if (superClass != null)
+                    return match(superClass);
 
             }
             if (considerInterfaces) {

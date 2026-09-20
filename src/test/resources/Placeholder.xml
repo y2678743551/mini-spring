@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="exampleBean" class="springframework.bean.ExampleBean">
+        <property name="name" value="${example.name}"/>
+    </bean>
+    <bean class="org.springframework.beans.factory.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:example.properties"/>
+    </bean>
+</beans>

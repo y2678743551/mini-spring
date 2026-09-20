@@ -26,6 +26,7 @@ public class AnnotationTypeFilter extends AbstractTypeHierarchyTraversingFilter 
     @Override
     protected boolean matchSelf(ClassNode classNode) {
         List<AnnotationNode> annotations = classNode.visibleAnnotations;
+        if (annotations == null) return false;
         for (AnnotationNode annotation : annotations) {
             Type type = Type.getType(annotation.desc);
             if (type.getClassName().equals(annotationType.getName())) {
