@@ -49,7 +49,7 @@ public class AutowiredAnnotationPostProcessor implements InstantiationAwareBeanP
                     beanToInject = beanFactory.getBean(fieldType);
                 try {
 
-                    field.set(beanToInject, pvs.getPropertyValue(field.getName()).getValue());
+                    field.set(bean, beanToInject);
                 } catch (IllegalAccessException e) {
                     throw new BeanException("", e);
                 }
@@ -64,7 +64,7 @@ public class AutowiredAnnotationPostProcessor implements InstantiationAwareBeanP
                 String value = valueAnnotation.value();
                 value = beanFactory.resolveEmbeddedValue(value);
                 Class<?> fieldType = field.getType();
-                Object convertedValue = null;
+                Object convertedValue = value;
                 ConversionService conversionService = beanFactory.getConversionService();
                 if(conversionService != null && conversionService.canConvert(value.getClass(), fieldType))
                     convertedValue = conversionService.convert(value, fieldType);

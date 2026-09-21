@@ -1,18 +1,12 @@
 package org.springframework.context.annotation;
 
 import cn.hutool.core.util.ClassUtil;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.ClassNode;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.core.io.Resource;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.core.type.filter.TypeFilter;
-import org.springframework.stereotype.Component;
+import org.springframework.core.filter.AnnotationTypeFilter;
+import org.springframework.core.filter.TypeFilter;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.*;

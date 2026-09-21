@@ -7,14 +7,13 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.BeanException;
 import org.springframework.beans.PropertyValue;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinitionReader;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.io.Resource;
-import org.springframework.core.type.filter.TypeFilter;
+import org.springframework.core.filter.TypeFilter;
 
 import java.io.IOException;
 import java.util.List;

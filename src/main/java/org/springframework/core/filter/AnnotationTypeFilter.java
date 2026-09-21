@@ -1,7 +1,6 @@
-package org.springframework.core.type.filter;
+package org.springframework.core.filter;
 
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;

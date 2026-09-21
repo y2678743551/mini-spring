@@ -1,6 +1,6 @@
 package springframework.bean;
 
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Component;
 
 @Component
 public class ComponentBean {

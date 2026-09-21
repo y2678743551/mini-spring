@@ -78,9 +78,14 @@ public class GenericConversionService implements ConversionService, ConverterReg
 
     @Override
     public boolean canConvert(Class<?> sourceType, Class<?> targetType) {
-
-        if (converters.containsKey(new GenericConverter.ConvertiblePair(sourceType, targetType))) {
-            return true;
+        List<Class<?>> sourceTypeHierarchy = getClassHierarchy(sourceType);
+        List<Class<?>> targetTypeHierarchy = getClassHierarchy(targetType);
+        for (Class<?> source : sourceTypeHierarchy) {
+            for (Class<?> target : targetTypeHierarchy) {
+                if (converters.containsKey(new GenericConverter.ConvertiblePair(source, target))) {
+                    return true;
+                }
+            }
         }
         return false;
     }

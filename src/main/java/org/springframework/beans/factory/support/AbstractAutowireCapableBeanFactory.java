@@ -11,6 +11,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.BeanReference;
 import org.springframework.beans.factory.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.ConverterException;
 import org.springframework.core.convert.support.DefaultConversionService;
 import java.lang.reflect.InvocationTargetException;
@@ -102,9 +103,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         for (PropertyValue propertyValue:pvs.getPropertyValueList()){
             String name = propertyValue.getName();
             Object value = propertyValue.getValue();
-            value = resolveEmbeddedValue((String) value);
+
             if(value instanceof BeanReference beanReference){
                 value=getBean(beanReference.getBeanName());
+            }else if(value instanceof String){
+                value=resolveEmbeddedValue((String) value);
             }
             propertyValue.setValue(value);
         }
@@ -260,10 +263,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 
             Class<?> targetType = (Class<?>) TypeUtil.getFieldType(bean.getClass(), name);
-
-            if (targetType != null && !value.getClass().isAssignableFrom(targetType)&&getConversionService().canConvert(value.getClass(), targetType)) {
+            ConversionService conversionService = getConversionService();
+            Class<?> sourceClass = value.getClass();
+            if (conversionService != null && targetType != null && !sourceClass.isAssignableFrom(targetType) && conversionService.canConvert(sourceClass, targetType)) {
                 try {
-                    value = getConversionService().convert(value, targetType);
+                    value = conversionService.convert(value, targetType);
                 } catch (ConverterException e) {
                     throw new BeanException(e.getMessage(), e);
                 }

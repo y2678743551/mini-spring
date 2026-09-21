@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationPostProcessor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Set;

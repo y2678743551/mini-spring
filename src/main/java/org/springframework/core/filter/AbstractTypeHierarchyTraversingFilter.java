@@ -1,14 +1,10 @@
-package org.springframework.core.type.filter;
+package org.springframework.core.filter;
 
-import cn.hutool.core.util.ClassUtil;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 public abstract class AbstractTypeHierarchyTraversingFilter  implements TypeFilter {

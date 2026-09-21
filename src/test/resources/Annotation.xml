@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="annotationTestBean" class="springframework.bean.AnnotationTestBean"/>
+    <bean id="exampleBean" class="springframework.bean.ExampleBean">
+        <property name="name" value="aaa"/>
+    </bean>
+    <bean id="exampleBean2" class="springframework.bean.ExampleBean">
+        <property name="name" value="bbb"/>
+
+    </bean>
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationPostProcessor"/>
+
+
+
+
+</beans>

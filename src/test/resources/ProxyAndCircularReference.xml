@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="conversionService" class="org.springframework.core.convert.support.DefaultConversionService"/>
+
+
+
+    <bean id="converters" class="org.springframework.core.convert.support.StringToNumberConverter"/>
+
+
+    <bean id="testAfterReturningAdvice" class="springframework.aop.advice.TestAfterReturningAdvice"/>
+    <bean id="testMethodBeforeAdvice" class="springframework.aop.advice.TestMethodBeforeAdvice"/>
+
+    <bean id="afterReturningAdviceAdapter" class="org.springframework.aop.adapter.AfterReturningAdviceAdapter">
+        <property name="advice" ref="testAfterReturningAdvice"/>
+    </bean>
+    <bean id="methodBeforeAdviceAdapter" class="org.springframework.aop.adapter.MethodBeforeAdviceAdapter">
+        <property name="advice" ref="testMethodBeforeAdvice"/>
+    </bean>
+    <bean id="afterReturningAdvisor" class="org.springframework.aop.aspectJ.AspectJExpressionPointcutAdvisor">
+        <property name="expression" value="execution(* springframework.bean.ExampleBean.*(..))"/>
+        <property name="advice" ref="afterReturningAdviceAdapter"/>
+    </bean>
+    <bean id="methodBeforeAdvisor" class="org.springframework.aop.aspectJ.AspectJExpressionPointcutAdvisor">
+        <property name="expression" value="execution(* springframework.bean.ExampleBean.*(..))"/>
+        <property name="advice" ref="methodBeforeAdviceAdapter"/>
+    </bean>
+    <bean id="A" class="springframework.bean.BeanA">
+        <property name="b" ref="B"/>
+    </bean>
+    <bean id="B" class="springframework.bean.BeanB">
+        <property name="a" ref="A"/>
+    </bean>
+    <bean id="C" class="springframework.bean.BeanC">
+        <property name="c" ref="C"/>
+    </bean>
+</beans>

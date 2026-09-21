@@ -1,4 +1,4 @@
-package org.springframework.core.type.filter;
+package org.springframework.core.filter;
 
 import java.io.IOException;
 

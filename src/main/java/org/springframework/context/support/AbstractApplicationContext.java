@@ -10,6 +10,7 @@ import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -23,6 +24,7 @@ import java.util.Map;
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigableApplicationContext {
 
     private static final String APPLICATION_EVENT_MULTICASTER_BEAN_NAME = "applicationEventMulticaster";
+    private static final String CONVERSION_SERVICE_BEAN_NAME = "conversionService";
 
     private ConfigurableEnvironment environment;
 
@@ -55,6 +57,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
     private void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
+        if (beanFactory.containsBean(CONVERSION_SERVICE_BEAN_NAME)) {
+            Object conversionService = beanFactory.getBean(CONVERSION_SERVICE_BEAN_NAME);
+            if (conversionService instanceof ConversionService) {
+                beanFactory.setConversionService((ConversionService) conversionService);
+            }
+        }
         beanFactory.preInstantiateSingletons();
     }
 
