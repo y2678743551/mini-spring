@@ -6,7 +6,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import springframework.bean.InitAndDestroy;
 
-public class initAndDestroyTest {
+public class InitAndDestroyTest {
     @Test
     public void testInitAndDestroy() {
         AbstractApplicationContext context = new ClassPathXmlApplicationContext("classpath:InitAndDestroy.xml");
