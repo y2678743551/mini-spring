@@ -12,6 +12,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.EnvironmentAwareProcessor;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.DefaultResourceLoader;
 
@@ -101,6 +102,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     private void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
         beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+        beanFactory.addBeanPostProcessor(new EnvironmentAwareProcessor(getEnvironment()));
     }
 
 
@@ -133,7 +135,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     @Override
     public void close() {
         applicationEventMulticaster.multicastEvent(new ContextClosedEvent(this));
-
         getBeanFactory().destroySingletons();
     }
 

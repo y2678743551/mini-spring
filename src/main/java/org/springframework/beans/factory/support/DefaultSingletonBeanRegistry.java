@@ -1,5 +1,6 @@
 package org.springframework.beans.factory.support;
 
+import org.springframework.beans.BeanException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
@@ -97,7 +98,7 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
                 try {
                     bean.destroy();
                 } catch (Exception e) {
-                    System.err.println("Destroy method on bean with name '" + beanName + "' threw an exception");
+                    System.err.println("执行" + beanName + "的disposable销毁方法时抛出异常");
 
                 }
             });

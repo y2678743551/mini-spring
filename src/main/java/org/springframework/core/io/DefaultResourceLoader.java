@@ -19,7 +19,7 @@ public class DefaultResourceLoader implements ResourceLoader {
             try{
                 URL url = new URI(location).toURL();
                 return new UrlResource(url);
-            }catch (URISyntaxException | MalformedURLException e) {
+            }catch (URISyntaxException | MalformedURLException|IllegalArgumentException e) {
                 return new FileSystemResource(location);
             }
 

@@ -1,5 +1,6 @@
 package org.springframework.core.env;
 
+import org.springframework.core.env.PropertySources;
 import java.util.Map;
 /*
  * 可配置的环境接口
@@ -7,6 +8,7 @@ import java.util.Map;
  */
 public interface ConfigurableEnvironment extends Environment {
 
+    MutablePropertySources getPropertySources();
 
     /**
      * @param profile 激活的环境

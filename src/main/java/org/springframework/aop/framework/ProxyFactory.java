@@ -14,10 +14,14 @@ public class ProxyFactory {
         return createAopProxy().getProxy();
     }
     private AopProxy createAopProxy() {
-        if (advisedSupport.isProxyTargetClass()) {
-            return new CglibAopProxy(advisedSupport);
+        if (!advisedSupport.isProxyTargetClass()) {
+            Class<?>[] targetClass = advisedSupport.getTargetSource().getTarget().getClass().getInterfaces();
+            if (targetClass.length == 0) {
+                return new CglibAopProxy(advisedSupport);
+            }
+            return new JdkDynamicAopProxy(advisedSupport);
         }
-        return new JdkDynamicAopProxy(advisedSupport);
+        return new CglibAopProxy(advisedSupport);
     }
 
 

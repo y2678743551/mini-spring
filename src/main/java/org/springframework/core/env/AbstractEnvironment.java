@@ -22,7 +22,14 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
     private final Set<String> defaultProfiles = new LinkedHashSet<>(Collections.singleton(DEFAULT_PROFILE_NAME));
 
+    AbstractEnvironment() {
+        customizePropertySources(this.propertySources);
+    }
     protected abstract void customizePropertySources(MutablePropertySources propertySources) ;
+    @Override
+    public MutablePropertySources getPropertySources() {
+        return propertySources;
+    }
     /**
      * 验证profile名称
      *

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="initAndDestroy" class="springframework.bean.InitAndDestroy" destroy-method="des" init-method="init"/>
+
+
+</beans>

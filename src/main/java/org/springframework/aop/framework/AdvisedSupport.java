@@ -24,7 +24,7 @@ public class AdvisedSupport {
 
     private List<Advisor> advisors = new ArrayList<>();
 
-    private boolean proxyTargetClass = true;
+    private boolean proxyTargetClass = false;
 
     private transient Map<Method, List<Object>> methodCache = new ConcurrentHashMap<>(32);
 

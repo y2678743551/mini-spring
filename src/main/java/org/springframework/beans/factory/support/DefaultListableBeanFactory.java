@@ -51,7 +51,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
      * @param beanDefinition
      */
     public void registerDisposableBean(String beanName, Object bean, BeanDefinition beanDefinition) {
-        if(beanDefinition.isSingleton() &&( beanDefinition.getDestroyMethodName() != null || bean instanceof DisposableBean))
+        if((beanDefinition.isSingleton() &&( beanDefinition.getDestroyMethodName() != null )|| bean instanceof DisposableBean))
             registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition.getDestroyMethodName()));
     }
 
@@ -64,6 +64,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         beanDefinitionMap.forEach((beanName, beanDefinition) -> {
             if (beanDefinition.isSingleton()&& !beanDefinition.isLazyInit()) {
                 Object bean = createBean(beanName, beanDefinition);
+                registerDisposableBean(beanName, bean, beanDefinition);
             }
         });
     }

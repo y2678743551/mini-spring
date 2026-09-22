@@ -10,7 +10,9 @@ public class AutoProxyTest {
     public void test() {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:AutoProxy.xml");
 
-        ExampleBean bean = (ExampleBean) applicationContext.getBean("exampleBean");
+        ExampleBean bean = (ExampleBean) applicationContext.getBean("CglibProxy");
         System.out.println(bean.getName());
+        Object bean1 = applicationContext.getBean("JDKProxy");
+        System.out.println(bean1.getClass());
     }
 }

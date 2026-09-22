@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
     <bean id="autoProxyCreator" class="org.springframework.aop.framework.AutoProxyCreator"/>
-    <bean id="exampleBean" class="springframework.bean.ExampleBean">
+    <bean id="CglibProxy" class="springframework.bean.ExampleBean">
         <property name="name" value="exampleName"/>
     </bean>
-
+    <bean id="JDKProxy" class="springframework.bean.Aware"/>
     <bean id="testAfterReturningAdvice" class="springframework.aop.advice.TestAfterReturningAdvice"/>
     <bean id="testMethodBeforeAdvice" class="springframework.aop.advice.TestMethodBeforeAdvice"/>
 
