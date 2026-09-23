@@ -1,9 +1,8 @@
 # mini-spring
 
-> 手写复刻 Spring Framework 的 **IoC 容器**与 **AOP 内核**，包结构与官方源码保持一致（`org.springframework.*`），便于逐类对照阅读。
+> 复刻 Spring Framework 的 **IoC 容器**与 **AOP 内核**
 >
-> **定位声明**：这是一个学习 / 教学型工程，目标是「把 Spring 的核心机制用可读的代码重新实现一遍」，**不是生产可用框架**。它刻意保留了与官方一致的分层与命名，牺牲完备性换取可读性。
-
+> **定位声明**：这是一个学习 / 教学型工程，目标是「把 Spring 的核心机制用可读的代码重新实现一遍」，**不是生产可用框架**。
 ---
 
 ## 目录
@@ -55,7 +54,7 @@ mvn clean test
 
 ## 架构总览
 
-四个模块自上而下单向依赖，`aop` 通过 `beans` 提供的 `BeanPostProcessor` 扩展点反向织入——这是 Spring 最核心的设计手法之一。
+四个模块自上而下单向依赖，`aop` 通过 `beans` 提供的 `BeanPostProcessor` 扩展点反向织入。
 
 ```mermaid
 graph TD
